@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'colors.dart' as colors;
 
 class HomePage extends StatefulWidget {
@@ -9,6 +10,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List info = [];
+
+  _initData() async {
+    DefaultAssetBundle.of(context).loadString("json/info.json").then((value) {
+      this.setState(() {
+        info = jsonDecode(value);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    print("HELLO WORLD");
+    super.initState();
+    _initData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -243,7 +261,108 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-            )
+            ),
+            Row(
+              children: [
+                Text(
+                  "Area of focus",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w500,
+                      color: colors.AppColor.homePageTitle),
+                )
+              ],
+            ),
+            Expanded(
+                child: OverflowBox(
+              maxWidth: MediaQuery.of(context).size.width,
+              child: MediaQuery.removePadding(
+                removeTop: true,
+                context: context,
+                child: ListView.builder(
+                    itemCount: info.length.toDouble() ~/ 2,
+                    itemBuilder: (_, i) {
+                      int a = 2 * i;
+                      int b = 2 * i + 1;
+
+                      return Row(
+                        children: [
+                          Container(
+                            height: 170,
+                            width: (MediaQuery.of(context).size.width - 90) / 2,
+                            margin:
+                                EdgeInsets.only(left: 30, bottom: 30, top: 15),
+                            padding: EdgeInsets.only(bottom: 5),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                    image: AssetImage(info[a]['img'])),
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 3,
+                                      offset: Offset(5, 5),
+                                      color: colors.AppColor.gradientSecond
+                                          .withOpacity(0.1)),
+                                  BoxShadow(
+                                      blurRadius: 3,
+                                      offset: Offset(-5, -5),
+                                      color: colors.AppColor.gradientSecond
+                                          .withOpacity(0.1)),
+                                ]),
+                            child: Center(
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(
+                                  info[a]['title'],
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: colors.AppColor.homePageDetail),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 170,
+                            width: (MediaQuery.of(context).size.width - 90) / 2,
+                            margin:
+                                EdgeInsets.only(left: 30, bottom: 30, top: 15),
+                            padding: EdgeInsets.only(bottom: 5),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                    image: AssetImage(info[b]['img'])),
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 3,
+                                      offset: Offset(5, 5),
+                                      color: colors.AppColor.gradientSecond
+                                          .withOpacity(0.1)),
+                                  BoxShadow(
+                                      blurRadius: 3,
+                                      offset: Offset(-5, -5),
+                                      color: colors.AppColor.gradientSecond
+                                          .withOpacity(0.1)),
+                                ]),
+                            child: Center(
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(
+                                  info[b]['title'],
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: colors.AppColor.homePageDetail),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      );
+                    }),
+              ),
+            ))
           ],
         ),
       ),
